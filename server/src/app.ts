@@ -4,6 +4,7 @@ import { pinoHttp } from 'pino-http';
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { healthRouter } from './routes/health.js';
+import { qaRouter } from './routes/qa.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
 
 export function createApp(): Express {
@@ -24,6 +25,7 @@ export function createApp(): Express {
   );
 
   app.use('/health', healthRouter);
+  app.use('/api/qa', qaRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

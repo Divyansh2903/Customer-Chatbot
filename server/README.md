@@ -40,6 +40,44 @@ The server starts on `http://localhost:4000`. Hit `GET /health` to confirm it's 
 | `GEMINI_API_KEY` | yes      | —                        | Used in later features                 |
 | `CORS_ORIGIN`    | no       | `http://localhost:5173`  | Vite dev server origin                 |
 
+## API
+
+### Health
+
+```
+GET /health
+```
+
+### Q&A pairs
+
+```
+GET    /api/qa?search=&page=1&limit=20
+GET    /api/qa/:id
+POST   /api/qa            { question, answer }
+PUT    /api/qa/:id        { question?, answer? }
+DELETE /api/qa/:id
+```
+
+Quick smoke test:
+
+```bash
+# create
+curl -X POST http://localhost:4000/api/qa \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"What are your hours?","answer":"Mon-Fri 9-5 PT."}'
+
+# list
+curl http://localhost:4000/api/qa
+
+# update
+curl -X PUT http://localhost:4000/api/qa/<id> \
+  -H 'Content-Type: application/json' \
+  -d '{"answer":"Mon-Fri 9-6 PT."}'
+
+# delete
+curl -X DELETE http://localhost:4000/api/qa/<id>
+```
+
 ## Layout
 
 ```
@@ -50,6 +88,10 @@ src/
   lib/env.ts        Validated env config (zod)
   lib/logger.ts     Pino logger
   lib/http-error.ts HttpError class
-  middleware/       Cross-cutting middleware
-  routes/           Route modules
+  lib/async-handler Wraps async route handlers
+  middleware/       validate (zod), error-handler
+  models/           Mongoose models
+  routes/           Route definitions + per-route zod schemas
+  controllers/      Request → service → response
+  services/         DB / business logic
 ```
