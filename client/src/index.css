@@ -1,111 +1,216 @@
+@import 'tailwindcss';
+
+/* Class-based dark mode: toggled by adding `.dark` to <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Material-style design tokens shared across both reference design systems
+  (light "KnowledgeBase AI" + dark "Lumina Knowledge Dark"). Token *names* are
+  shared; values are swapped at runtime by overriding the raw `--c-*` / `--f-*`
+  custom properties under `.dark`. `@theme inline` makes the generated utilities
+  reference those variables directly, so the override takes effect live.
+*/
+@theme inline {
+  --color-background: var(--c-background);
+  --color-on-background: var(--c-on-background);
+
+  --color-surface: var(--c-surface);
+  --color-surface-dim: var(--c-surface-dim);
+  --color-surface-bright: var(--c-surface-bright);
+  --color-surface-variant: var(--c-surface-variant);
+  --color-surface-container-lowest: var(--c-surface-container-lowest);
+  --color-surface-container-low: var(--c-surface-container-low);
+  --color-surface-container: var(--c-surface-container);
+  --color-surface-container-high: var(--c-surface-container-high);
+  --color-surface-container-highest: var(--c-surface-container-highest);
+  --color-on-surface: var(--c-on-surface);
+  --color-on-surface-variant: var(--c-on-surface-variant);
+
+  --color-inverse-surface: var(--c-inverse-surface);
+  --color-inverse-on-surface: var(--c-inverse-on-surface);
+  --color-inverse-primary: var(--c-inverse-primary);
+
+  --color-outline: var(--c-outline);
+  --color-outline-variant: var(--c-outline-variant);
+
+  --color-primary: var(--c-primary);
+  --color-on-primary: var(--c-on-primary);
+  --color-primary-container: var(--c-primary-container);
+  --color-on-primary-container: var(--c-on-primary-container);
+  --color-primary-fixed: var(--c-primary-fixed);
+  --color-on-primary-fixed: var(--c-on-primary-fixed);
+  --color-surface-tint: var(--c-surface-tint);
+
+  --color-secondary: var(--c-secondary);
+  --color-on-secondary: var(--c-on-secondary);
+  --color-secondary-container: var(--c-secondary-container);
+  --color-on-secondary-container: var(--c-on-secondary-container);
+
+  --color-tertiary: var(--c-tertiary);
+  --color-on-tertiary: var(--c-on-tertiary);
+  --color-tertiary-container: var(--c-tertiary-container);
+  --color-on-tertiary-container: var(--c-on-tertiary-container);
+
+  --color-error: var(--c-error);
+  --color-on-error: var(--c-on-error);
+  --color-error-container: var(--c-error-container);
+  --color-on-error-container: var(--c-on-error-container);
+
+  --font-sans: var(--f-sans);
+  --font-display: var(--f-display);
+  --font-mono: var(--f-mono);
+}
+
+/* Light theme — "KnowledgeBase AI" */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --c-background: #f5fbf5;
+  --c-on-background: #171d19;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --c-surface: #f5fbf5;
+  --c-surface-dim: #d5dcd6;
+  --c-surface-bright: #f5fbf5;
+  --c-surface-variant: #dee4de;
+  --c-surface-container-lowest: #ffffff;
+  --c-surface-container-low: #eff5ef;
+  --c-surface-container: #e9efe9;
+  --c-surface-container-high: #e4eae4;
+  --c-surface-container-highest: #dee4de;
+  --c-on-surface: #171d19;
+  --c-on-surface-variant: #3d4a42;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --c-inverse-surface: #2c322e;
+  --c-inverse-on-surface: #ecf2ec;
+  --c-inverse-primary: #68dba9;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  --c-outline: #6d7a72;
+  --c-outline-variant: #bccac0;
+
+  --c-primary: #006948;
+  --c-on-primary: #ffffff;
+  --c-primary-container: #00855d;
+  --c-on-primary-container: #f5fff7;
+  --c-primary-fixed: #85f8c4;
+  --c-on-primary-fixed: #002114;
+  --c-surface-tint: #006c4a;
+
+  --c-secondary: #575e70;
+  --c-on-secondary: #ffffff;
+  --c-secondary-container: #d9dff5;
+  --c-on-secondary-container: #5c6274;
+
+  --c-tertiary: #9b3e3b;
+  --c-on-tertiary: #ffffff;
+  --c-tertiary-container: #ba5551;
+  --c-on-tertiary-container: #fffbff;
+
+  --c-error: #ba1a1a;
+  --c-on-error: #ffffff;
+  --c-error-container: #ffdad6;
+  --c-on-error-container: #93000a;
+
+  --f-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --f-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  color-scheme: light;
+}
+
+/* Dark theme — "Lumina Knowledge Dark" */
+.dark {
+  --c-background: #131313;
+  --c-on-background: #e5e2e1;
+
+  --c-surface: #131313;
+  --c-surface-dim: #131313;
+  --c-surface-bright: #3a3939;
+  --c-surface-variant: #353534;
+  --c-surface-container-lowest: #0e0e0e;
+  --c-surface-container-low: #1c1b1b;
+  --c-surface-container: #201f1f;
+  --c-surface-container-high: #2a2a2a;
+  --c-surface-container-highest: #353534;
+  --c-on-surface: #e5e2e1;
+  --c-on-surface-variant: #bbcabf;
+
+  --c-inverse-surface: #e5e2e1;
+  --c-inverse-on-surface: #313030;
+  --c-inverse-primary: #006c49;
+
+  --c-outline: #86948a;
+  --c-outline-variant: #3c4a42;
+
+  --c-primary: #4edea3;
+  --c-on-primary: #003824;
+  --c-primary-container: #10b981;
+  --c-on-primary-container: #00422b;
+  --c-primary-fixed: #6ffbbe;
+  --c-on-primary-fixed: #002113;
+  --c-surface-tint: #4edea3;
+
+  --c-secondary: #b9c7e0;
+  --c-on-secondary: #233144;
+  --c-secondary-container: #3c4a5e;
+  --c-on-secondary-container: #abb9d2;
+
+  --c-tertiary: #68dba9;
+  --c-on-tertiary: #003825;
+  --c-tertiary-container: #3eb686;
+  --c-on-tertiary-container: #00422c;
+
+  --c-error: #ffb4ab;
+  --c-on-error: #690005;
+  --c-error-container: #93000a;
+  --c-on-error-container: #ffdad6;
+
+  /* Dark system uses Geist for display type. */
+  --f-display: 'Geist', system-ui, -apple-system, sans-serif;
+
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--c-background);
+    color: var(--c-on-background);
+    font-family: var(--f-sans);
+  }
+
+  /* Material Symbols base. Use the `.icon-fill` modifier for filled glyphs. */
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    direction: ltr;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    user-select: none;
+  }
+
+  .icon-fill {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+@layer utilities {
+  /* Soft ambient shadow used for floating elements (modals, popovers, input bar). */
+  .shadow-ambient {
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.1),
+      0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* Thin, theme-aware scrollbars. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-outline-variant) transparent;
 }

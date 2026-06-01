@@ -30,8 +30,8 @@ export async function extractTextFromBuffer(
 function normalize(text: string): string {
   return text
     .replace(/\r\n/g, '\n')
-    .replace(/ /g, '')
-    .replace(/[ \t]+\n/g, '\n')
-    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]+/g, ' ') // collapse runs of spaces/tabs to a single space
+    .replace(/ *\n/g, '\n') // drop trailing spaces before newlines
+    .replace(/\n{3,}/g, '\n\n') // cap consecutive blank lines
     .trim();
 }

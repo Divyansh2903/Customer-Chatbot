@@ -16,11 +16,13 @@ export interface RetrievedItem {
 }
 
 const TOP_K = 5;
-// Cosine floor below which a match is treated as irrelevant. gemini-embedding-001
-// vectors put genuinely relevant matches around 0.6+ and noise well below.
-const SCORE_FLOOR = 0.5;
-// Curated Q&A is authored by hand, so nudge it ahead of extracted document text.
-const QA_BOOST = 0.05;
+// Cosine floor below which a match is treated as irrelevant. With task-type
+// embeddings, genuinely relevant matches land ~0.65+ while off-topic queries top
+// out ~0.58, so 0.6 separates them (tuned against the seed data).
+const SCORE_FLOOR = 0.6;
+// Curated Q&A is authored by hand, so nudge it ahead of extracted document text —
+// but only as a gentle tiebreaker, or unrelated Q&A floats over the floor.
+const QA_BOOST = 0.02;
 const SNIPPET_LENGTH = 240;
 
 function cosineSimilarity(a: number[], b: number[]): number {
@@ -46,7 +48,7 @@ function snippet(text: string): string {
 }
 
 export async function retrieve(query: string): Promise<RetrievedItem[]> {
-  const queryVec = await embedOne(query);
+  const queryVec = await embedOne(query, 'RETRIEVAL_QUERY');
 
   const [chunks, qaPairs] = await Promise.all([
     ChunkModel.find({}, { content: 1, embedding: 1, documentId: 1 })
