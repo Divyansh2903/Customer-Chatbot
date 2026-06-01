@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { env } from './env.js';
 
 export const EMBEDDING_MODEL = 'gemini-embedding-001';
+export const CHAT_MODEL = 'gemini-3.5-flash';
 
 const BATCH_SIZE = 100;
 
@@ -38,4 +39,24 @@ export async function embedOne(text: string): Promise<number[]> {
   const [vector] = await embed([text]);
   if (!vector) throw new Error('embedOne returned no vector');
   return vector;
+}
+
+export interface ChatTurn {
+  role: 'user' | 'model';
+  text: string;
+}
+
+export async function chat(
+  systemInstruction: string,
+  turns: ChatTurn[],
+): Promise<string> {
+  const response = await ai.models.generateContent({
+    model: CHAT_MODEL,
+    config: { systemInstruction },
+    contents: turns.map((t) => ({ role: t.role, parts: [{ text: t.text }] })),
+  });
+
+  const text = response.text;
+  if (!text) throw new Error('Gemini returned an empty chat response');
+  return text;
 }

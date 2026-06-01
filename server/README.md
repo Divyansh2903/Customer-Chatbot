@@ -35,6 +35,7 @@ The server starts on `http://localhost:4000`. Hit `GET /health` to confirm it's 
 | `pnpm dev`       | Watch mode with `tsx`                           |
 | `pnpm build`     | Compile TypeScript to `dist/`                   |
 | `pnpm start`     | Run the compiled build                          |
+| `pnpm seed`      | Load sample documents + Q&A (`--reset` to wipe first) |
 | `pnpm typecheck` | Type-check without emitting                     |
 
 ## Environment
@@ -44,7 +45,7 @@ The server starts on `http://localhost:4000`. Hit `GET /health` to confirm it's 
 | `PORT`                 | no       | `4000`                   |                                        |
 | `NODE_ENV`             | no       | `development`            |                                        |
 | `MONGODB_URI`          | yes      | —                        | Atlas connection string                |
-| `GEMINI_API_KEY`       | yes      | —                        | Used in later features                 |
+| `GEMINI_API_KEY`       | yes      | —                        | Embeddings + chat completion           |
 | `CORS_ORIGIN`          | no       | `http://localhost:5173`  | Vite dev server origin                 |
 | `R2_ACCOUNT_ID`        | yes      | —                        | Cloudflare account id                  |
 | `R2_ACCESS_KEY_ID`     | yes      | —                        | R2 API token access key                |
@@ -123,6 +124,53 @@ curl -X PUT http://localhost:4000/api/qa/<id> \
 curl -X DELETE http://localhost:4000/api/qa/<id>
 ```
 
+### Chat (RAG)
+
+```
+POST /api/chat    { message, history? }
+```
+
+`history` is an optional array of prior turns (`{ role: "user" | "model", content }`),
+trimmed server-side to the last 8. The request is **rate-limited to 30/minute/IP**.
+
+The handler embeds the question, runs cosine similarity over every chunk and Q&A
+embedding (curated Q&A gets a small score boost), keeps the top matches above a
+relevance floor, and asks `gemini-3.5-flash` to answer **using only that context**.
+If nothing clears the floor it returns a fixed "not enough information" reply
+without calling the model.
+
+Response:
+
+```jsonc
+{
+  "reply": "Standard shipping is free on orders over $50…",
+  "sources": [
+    { "type": "document", "title": "shipping-and-delivery.txt", "snippet": "…" },
+    { "type": "qa", "title": "What hours is customer support available?", "snippet": "…" }
+  ]
+}
+```
+
+```bash
+curl -X POST http://localhost:4000/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"How long do refunds take?"}'
+```
+
+## Seeding sample data
+
+To get a populated knowledge base for a quick demo (the sample files live in
+`seed/`):
+
+```bash
+pnpm seed           # add sample documents + Q&A pairs
+pnpm seed --reset   # wipe existing documents/Q&A (and their R2 objects) first
+```
+
+This uploads the sample `.txt` files through the real ingest pipeline (R2 +
+chunk + embed) and waits until each is `ready`, then creates a handful of curated
+Q&A pairs. Requires Mongo, R2, and `GEMINI_API_KEY` to be configured.
+
 ## Layout
 
 ```
@@ -135,12 +183,14 @@ src/
   lib/http-error.ts HttpError class
   lib/async-handler Wraps async route handlers
   lib/r2.ts         Cloudflare R2 client (put/delete)
-  lib/gemini.ts     Google GenAI wrapper (embed, embedOne)
+  lib/gemini.ts     Google GenAI wrapper (embed, embedOne, chat)
   lib/chunking.ts   Sentence-aware text chunker
-  middleware/       validate (zod), error-handler
+  middleware/       validate (zod), error-handler, rate-limit (chat)
   models/           Mongoose models
   routes/           Route definitions + per-route zod schemas
   controllers/      Request → service → response
-  services/         DB / business logic
+  services/         DB / business logic (documents, qa, retrieval, chat)
   services/parsers/ Per-MIME text extractors + dispatcher
+  scripts/seed.ts   Sample data seeder (pnpm seed)
+seed/               Sample knowledge .txt files used by the seeder
 ```

@@ -1,0 +1,27 @@
+Acme Supply Co. — Billing & Membership Plans
+
+Membership tiers
+- Free: standard pricing, no annual fee.
+- Plus ($49/year): free standard shipping on every order and early access to sales.
+- Pro ($99/year): everything in Plus, plus free expedited shipping and a dedicated
+  support line.
+
+Billing cycle
+Paid memberships are billed once per year on the date you subscribe and renew
+automatically. We email a reminder 7 days before each renewal.
+
+Payment methods
+We accept Visa, Mastercard, American Express, Discover, and PayPal. We do not
+accept checks, wire transfers, or cryptocurrency.
+
+Updating payment details
+Update your card under Account → Billing. Changes apply to your next charge.
+
+Canceling a membership
+You can cancel anytime under Account → Billing → Cancel membership. Your benefits
+remain active until the end of the current paid year; we do not prorate refunds
+for the unused portion.
+
+Invoices and receipts
+A receipt is emailed after every charge. Full invoices are available under
+Account → Billing → History and can be downloaded as PDF.

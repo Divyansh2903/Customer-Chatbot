@@ -1,0 +1,23 @@
+Acme Supply Co. — Shipping & Delivery
+
+Order processing
+Orders placed before 1:00 PM Pacific Time on a business day are processed and
+handed to the carrier the same day. Orders placed after the cutoff, on weekends,
+or on US public holidays are processed the next business day.
+
+Shipping methods and cost
+- Standard (3–5 business days): free on orders over $50, otherwise $5.99.
+- Expedited (2 business days): $14.99.
+- Overnight (next business day): $29.99.
+Shipping cost is calculated at checkout based on the destination and the method
+selected. We currently ship to the United States and Canada only.
+
+Tracking
+A tracking number is emailed to you as soon as your order ships. You can also
+find it under Account → Orders. Tracking information can take up to 24 hours to
+appear on the carrier's site after the label is created.
+
+Lost or delayed packages
+If your tracking has not updated in 5 business days, or the carrier marks a
+package as delivered but you have not received it, contact support within 14 days
+of the ship date and we will open a claim and send a replacement.
