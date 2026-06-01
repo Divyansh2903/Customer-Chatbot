@@ -1,10 +1,15 @@
 import { QAPairModel, type QAPairDoc } from '../models/qa-pair.js';
 import { HttpError } from '../lib/http-error.js';
+import { embedOne } from '../lib/gemini.js';
 import type {
   CreateQAInput,
   ListQAQuery,
   UpdateQAInput,
 } from '../routes/qa.schemas.js';
+
+function embedInputFor(question: string, answer: string): string {
+  return `${question}\n${answer}`;
+}
 
 export interface PaginatedQA {
   items: QAPairDoc[];
@@ -43,18 +48,23 @@ export async function getQAPair(id: string): Promise<QAPairDoc> {
 }
 
 export async function createQAPair(input: CreateQAInput): Promise<QAPairDoc> {
-  return QAPairModel.create(input);
+  const embedding = await embedOne(embedInputFor(input.question, input.answer));
+  return QAPairModel.create({ ...input, embedding });
 }
 
 export async function updateQAPair(
   id: string,
   input: UpdateQAInput,
 ): Promise<QAPairDoc> {
-  const doc = await QAPairModel.findByIdAndUpdate(id, input, {
-    new: true,
-    runValidators: true,
-  }).exec();
+  const doc = await QAPairModel.findById(id).exec();
   if (!doc) throw HttpError.notFound('Q&A pair not found');
+
+  if (input.question !== undefined) doc.question = input.question;
+  if (input.answer !== undefined) doc.answer = input.answer;
+
+  doc.embedding = await embedOne(embedInputFor(doc.question, doc.answer));
+
+  await doc.save();
   return doc;
 }
 
