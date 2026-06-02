@@ -207,6 +207,62 @@
       0 4px 6px -1px rgb(0 0 0 / 0.1),
       0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
+
+  /* Refined elevation for chat bubbles / cards (support_chatbot redesign). */
+  .premium-shadow {
+    box-shadow:
+      0 4px 20px -4px rgb(0 0 0 / 0.05),
+      0 2px 8px -2px rgb(0 0 0 / 0.03);
+  }
+
+  /* Frosted, translucent surface for the sticky header + floating input bar.
+     Tracks the active theme via the surface token. */
+  .glass-panel {
+    background: color-mix(in srgb, var(--c-surface) 82%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* Three-dot "thinking" indicator (uses the primary token so it adapts to theme). */
+.dot-flashing {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--c-primary);
+  animation: dot-flashing 1s infinite linear alternate;
+  animation-delay: 0.5s;
+}
+.dot-flashing::before,
+.dot-flashing::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--c-primary);
+}
+.dot-flashing::before {
+  left: -10px;
+  animation: dot-flashing 1s infinite alternate;
+  animation-delay: 0s;
+}
+.dot-flashing::after {
+  left: 10px;
+  animation: dot-flashing 1s infinite alternate;
+  animation-delay: 1s;
+}
+@keyframes dot-flashing {
+  0% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.2;
+  }
 }
 
 /* Thin, theme-aware scrollbars. */

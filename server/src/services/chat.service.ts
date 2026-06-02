@@ -28,6 +28,8 @@ export interface ChatSource {
 export interface ChatResult {
   reply: string;
   sources: ChatSource[];
+  /** Gemini model that produced the reply; omitted when we decline without a model call. */
+  model?: string;
 }
 
 function dedupeSources(sources: ChatSource[]): ChatSource[] {
@@ -70,11 +72,11 @@ export async function answerQuestion(
     { role: 'user', text: message },
   ];
 
-  const reply = await chat(systemInstruction, turns);
+  const { text: reply, model } = await chat(systemInstruction, turns);
 
   const sources = dedupeSources(
     retrieved.map((r) => ({ type: r.type, title: r.title, snippet: r.snippet })),
   );
 
-  return { reply, sources };
+  return { reply, sources, model };
 }

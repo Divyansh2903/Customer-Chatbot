@@ -103,10 +103,17 @@ export interface ChatTurn {
   text: string;
 }
 
+export interface ChatCompletion {
+  /** The model reply text. */
+  text: string;
+  /** Which model in CHAT_MODELS actually produced the reply (after any fallback). */
+  model: string;
+}
+
 export async function chat(
   systemInstruction: string,
   turns: ChatTurn[],
-): Promise<string> {
+): Promise<ChatCompletion> {
   const contents = turns.map((t) => ({ role: t.role, parts: [{ text: t.text }] }));
   let lastErr: unknown;
 
@@ -120,7 +127,7 @@ export async function chat(
         });
         const text = response.text;
         if (!text) throw new Error('Gemini returned an empty chat response');
-        return text;
+        return { text, model };
       });
     } catch (err) {
       lastErr = err;

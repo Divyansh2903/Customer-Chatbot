@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { Icon } from '../ui/Icon'
 
 interface NavItem {
@@ -38,10 +38,15 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           (open ? 'translate-x-0' : '-translate-x-full')
         }
       >
-        <div className="px-6 mb-8 flex items-center gap-2">
-          <Icon name="psychology" fill size={26} className="text-primary" />
-          <h1 className="font-display text-xl font-bold text-primary">KnowledgeBase</h1>
-        </div>
+        <Link
+          to="/"
+          onClick={onClose}
+          className="px-6 mb-8 flex items-center gap-2.5 text-on-surface"
+          title="Back to home"
+        >
+          <img src="/logo.png" alt="AskHive" className="h-7 w-7" />
+          <h1 className="font-display text-xl font-bold">AskHive</h1>
+        </Link>
 
         <nav className="flex-1 px-4 space-y-1">
           {NAV_ITEMS.map((item) => (
@@ -65,14 +70,14 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             </NavLink>
           ))}
 
-          <NavLink
+          <Link
             to="/chat"
             onClick={onClose}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors"
+            className="mt-3 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold bg-primary text-on-primary shadow-sm hover:bg-surface-tint transition-colors"
           >
-            <Icon name="forum" />
+            <Icon name="forum" fill size={18} />
             Open Chatbot
-          </NavLink>
+          </Link>
         </nav>
 
         <div className="mt-auto px-4 pt-4 border-t border-outline-variant/50">
@@ -85,7 +90,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 Support Admin
               </span>
               <span className="font-mono text-[11px] text-on-surface-variant truncate">
-                KnowledgeBase AI
+                AskHive
               </span>
             </div>
           </div>

@@ -41,6 +41,8 @@ export interface ChatSource {
 export interface ChatResponse {
   reply: string
   sources: ChatSource[]
+  /** Gemini model that produced the reply; absent on a no-context decline. */
+  model?: string
 }
 
 export interface ChatHistoryTurn {

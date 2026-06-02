@@ -9,7 +9,7 @@ lerna-debug.log*
 
 chatbot-ui
 .claude
-docs
+PLAN.md
 
 
 node_modules

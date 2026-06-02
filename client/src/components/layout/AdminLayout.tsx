@@ -11,7 +11,7 @@ const TITLES: Record<string, string> = {
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { pathname } = useLocation()
-  const title = TITLES[pathname] ?? 'KnowledgeBase Admin'
+  const title = TITLES[pathname] ?? 'AskHive Admin'
 
   return (
     <div className="min-h-screen">
